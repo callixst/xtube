@@ -58,7 +58,10 @@ class Auth
 
         return [
             "google_id" => $google_account_info->id,
-            "name" => $google_account_info->name,
+            "name" => $google_account_info->givenName,
+            "name_c" => $google_account_info->familyName,
+            "surname" => $google_account_info->name,
+
             "email" => $google_account_info->email,
         ];
     }
