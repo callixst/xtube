@@ -1,0 +1,218 @@
+/* Reset some default margin and padding for consistency */
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #bbbbbb;
+    font-family: Arial, sans-serif;
+}
+
+/* Basic styling for the body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #292e36;
+}
+
+/* Styling for the main container */
+#menu {
+    float: left;
+    background-color: #7f8fa9;
+    padding: 10px;
+    width: 100%; /* Make it full width */
+    align-items: center;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Styling for the search bar */
+#search_bar {
+    flex-grow: 1;
+    padding: 10px;
+    float: left;
+}
+
+#profil{
+    float: right;
+    display: inline;
+    margin-top: 3em;
+    margin-right: 2em;
+}
+
+/* Style the search input */
+#Search input[type="text"] {
+    width: 300px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Style the search button */
+#Search input[type="submit"] {
+    background-color: #0073e6;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Style the profile section */
+#profil a {
+    text-decoration: none;
+    color: #0073e6;
+    margin-right: 10px;
+}
+
+/* Styling for the side menu */
+#side_menu {
+    width: 250px;
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    float: left;
+    clear: left;
+}
+
+/* Style the links in the side menu */
+#prijavaaa a {
+    display: block;
+    text-decoration: none;
+    color: #0073e6;
+    margin-bottom: 10px;
+}
+
+/* Styling for the videos container */
+#videos {
+    display: flex;
+    justify-content: space-between;
+padding: 10px;
+    float: left;
+
+}
+
+/* Styling for the video cards */
+.okno{
+    background-color: #5a6577;
+    padding: 1.5em;
+    border-radius: 10px;
+    margin-right: 2.5em;
+    margin: 2em;
+}
+textarea{
+    resize: none;
+    width: 60em;
+    height: 10em;
+}
+#video{
+    float: left;
+    clear: right;
+    margin: 2em;
+}
+#com{
+    float: left;
+    clear: left;
+    margin: 2em;
+}
+
+/* Style video titles and thumbnails */
+.okno h3 {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.okno img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Style the "Poglej video" link */
+.okno a {
+    text-decoration: none;
+    color: #ffffff;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Styling for the pagination or additional content */
+.str {
+    text-align: center;
+    margin-top: 20px;
+    clear: both;
+}
+#playlist{
+    float: left;
+}
+
+/* Styling for the footer or additional content */
+/* Add your own styling here */
+
+/* Media query for responsiveness */
+@media screen and (max-width: 768px) {
+    #videos {
+    }
+
+    .okno {
+        width: 100%;
+    }
+}
+ul{
+    list-style: none;
+}
+
+#ima {
+height: 200px;
+    width: 280px;
+}
+
+#ime{
+    display: inline-block; position: relative; width: 200px; height: 200px; overflow: hidden; border-radius: 50%; } .circular--landscape img { width: auto; height: 100%; margin-left: -50px;}
+
+#profilee{
+    float: left;
+    border-radius: 10px;
+    border: #5a6577 solid 2px;
+    margin: 3em;
+    padding: 2em;
+}
+#vids{
+    float: left;
+    margin: 2em;
+    padding: 2em;
+}
+#ame{
+    resize: none;
+    width: 18em;
+    height: 10em;
+}
+#playlist{
+    float: left;
+}
+#main{
+}
+#gre{
+    background-color: #bbbbbb;
+}
+
+#stran{
+    color: #fafafa;
+}
+
+ .rating {
+     unicode-bidi: bidi-override;
+     direction: rtl;
+     text-align: center;
+     font-size: 2em;
+ }
+
+.rating > span {
+    display: inline-block;
+    position: relative;
+    width: 1.1em;
+}
+
+.rating > span:hover:before, .rating > span:hover ~ span:before {
+    content: "\2605";
+    position: absolute;
+}
+
+
