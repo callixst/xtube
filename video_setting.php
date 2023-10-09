@@ -1,25 +1,20 @@
-<!-- video_setting.php -->
-
 <?php
 require_once "base.php";
 require_once "session.php";
 
 if (!isset($_SESSION['user_id'])) {
     // Preverite, ali je uporabnik prijavljen. Če ni, ga preusmerite na prijavo ali kam drugam.
-    header("Location: login.php"); // Spremenite "login.php" na vašo prijavno stran
+    header("Location: log_in.php"); // Spremenite "login.php" na vašo prijavno stran
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) {
-    // Preverite, ali je zahteva GET in ali je prisoten parameter "id" v URL-ju
-
+if (isset($_GET["id"])) {
     $videoId = $_GET["id"];
+
     $userId = $_SESSION['user_id'];
 
-    // Povežite se z bazo podatkov (predpostavljam, da imate že vzpostavljeno povezavo s podatkovno bazo)
-
     // Izvedite SQL poizvedbo za preverjanje, ali je uporabnik lastnik videoposnetka
-    $sqlCheckOwnership = "SELECT * FROM videos WHERE id_v = ? AND id_user = ?";
+    $sqlCheckOwnership = "SELECT * FROM videos WHERE id_v = ? AND id_c = ?";
     $stmtCheckOwnership = $pdo->prepare($sqlCheckOwnership);
     $stmtCheckOwnership->execute([$videoId, $userId]);
 
@@ -33,8 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) {
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Obrazec je bil oddan, posodobite podatke o videoposnetku
-            $newTitle = $_POST["title"];
-            $newDescription = $_POST["description"];
+            $newTitle = $_POST["lname"];
+            $newDescription = $_POST["bio"];
 
             // Tukaj lahko dodate kodo za posodobitev videoposnetka v bazi podatkov z uporabo UPDATE poizvedbe
             // Predlagam, da uporabite pripravljeno izjavo za to
@@ -52,12 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) {
     } else {
         // Uporabnik ni lastnik videoposnetka, zato mu ne dovolite urejanja
         echo "Nimate dovoljenja za urejanje tega videoposnetka.";
-        exit();
     }
 } else {
     // Neveljavna zahteva, lahko dodate dodatno obdelavo napak tukaj
     echo "Neveljavna zahteva.";
-    exit();
 }
 ?>
 
@@ -67,15 +60,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) {
     <title>Uredi videoposnetek</title>
 </head>
 <body>
-<h1>Uredi videoposnetek</h1>
-<form method="POST" action="settings_vin.php">
-    <label for="title">Naslov:</label>
-    <input type="text" id="title" name="title" value="<?php echo $videoData['title']; ?>"><br>
-
-    <label for="description">Opis:</label>
-    <textarea id="description" name="description"><?php echo $videoData['descr']; ?></textarea><br>
-
-    <input type="submit" value="Shrani spremembe">
-</form>
+<!-- Tukaj lahko dodate HTML obliko za urejanje videoposnetka, če želite -->
 </body>
 </html>
