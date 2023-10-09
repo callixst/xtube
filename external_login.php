@@ -20,27 +20,34 @@ if ($_GET['login_provider'] == "google") {
     $stmt->execute([$g_id]);
 
     if ($stmt->rowCount() == 1) {
-        // User already exists, log them in
         $user = $stmt->fetch();
-        $_SESSION['user_id'] = $user['id_u'];
+
+
+        $username = $user['name_c'];
+        $userid = $user['id_u'];
+
+        $_SESSION['name'] = $username;
+        $_SESSION['user_id'] = $user['id_c'];
+
         //$_SESSION['admin'] = $user['admin'];
 
-        // Redirect to index.php after logging in
         header("Location: index.php");
         die();
     } else {
         // User doesn't exist, so insert their information into the database
-        $id_m = 1; // Your default avatar_id
+        //$id_m = 1; // Your default avatar_id
 
-        $query = "INSERT INTO channels (name_c, email, pf_id, google_id) VALUES (?, ?, ?, ?)";
+        $query = "INSERT INTO channels (name_c, email, google_id) VALUES (?, ?, ?)";
         $stmt = $pdo->prepare($query);
-        $stmt->execute([$username, $email, $id_m, $g_id]);
+        $stmt->execute([$username, $email, $g_id]);
 
         // Retrieve the newly inserted user ID
         $newUserId = $pdo->lastInsertId();
 
         // Log in the newly created user
         $_SESSION['user_id'] = $newUserId;
+        $_SESSION['name'] = $username;
+
 
         // Redirect to index.php after inserting and logging in
         header("Location: index.php");
@@ -67,7 +74,7 @@ if ($_GET['login_provider'] == "facebook") {
         // User already exists, log them in
         $user = $stmt->fetch();
         $_SESSION['user_id'] = $user['id_u'];
-        $_SESSION['admin'] = $user['admin'];
+        //$_SESSION['admin'] = $user['admin'];
 
         // Redirect to index.php after logging in
         header("Location: index.php");
@@ -76,9 +83,9 @@ if ($_GET['login_provider'] == "facebook") {
         // User doesn't exist, so insert their information into the database
         $id_m = 1; // Your default avatar_id
 
-        $query = "INSERT INTO channels (name_c, email, pf_id, facebook_id) VALUES (?, ?, ?, ?)";
+        $query = "INSERT INTO channels (name_c, email, facebook_id) VALUES (?, ?, ?,)";
         $stmt = $pdo->prepare($query);
-        $stmt->execute([$username, $email, $id_m, $f_id]);
+        $stmt->execute([$username, $email, $f_id]);
 
         // Retrieve the newly inserted user ID
         $newUserId = $pdo->lastInsertId();
