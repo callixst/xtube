@@ -286,7 +286,7 @@ h6 {
   transition: all 0.5s;
   z-index: 997;
   padding: 30px 0;
-  background-color: #000;
+  background-color: #4b4b4b;
 }
 
 .header .logo {
@@ -1295,6 +1295,58 @@ h6 {
 
     margin-bottom: 20px; /* Razmik med vrsticami */
   }
+
+.fram{
+  height: 414;
+}
 }
 
+.ima{
+  height: 10em;
+  width: auto;
+}
+
+
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  text-align: center;
+  font-size: 2em;
+}
+
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
+
+.rating > span:hover:before, .rating > span:hover ~ span:before {
+  content: "\2605";
+  position: absolute;
+}
+
+#ime{
+  display: inline-block; position: relative; width: 300px; height: 300px; overflow: hidden; border-radius: 50%; } .circular--landscape img { width: auto; height: 100%; margin-left: -50px;}
+
+.thumb{
+  display: block;
+  margin: 0 auto; /* To centerira sliko vodoravno */
+  text-align: center;
+  height: 10em;
+  width: auto;
+}
+
+.slik{
+  float: left;
+}
+
+.imen{
+  float: left;
+  width: 25em;
+}
+.vr{
+  clear: right;
+  float: left;
+}
 
