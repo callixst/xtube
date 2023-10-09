@@ -21,7 +21,7 @@ if (!empty($email) && !empty($pass)) {
 
             // Store user information in the session
             $_SESSION['user_id'] = $user['id_c'];
-            $_SESSION['name'] = $user['name'];
+            $_SESSION['name'] = $user['name_c'];
 
             header("Location: index.php");
             die();
