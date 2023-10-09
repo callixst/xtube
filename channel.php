@@ -1,3 +1,7 @@
+<?php
+require_once "base.php";
+require_once "session.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,16 +29,8 @@
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
 
-  <!-- Template Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: PhotoFolio
-  * Updated: Sep 18 2023 with Bootstrap v5.3.2
-  * Template URL: https://bootstrapmade.com/photofolio-bootstrap-photography-website-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -119,169 +115,143 @@
       <?php
       if (isset($_GET['id'])) {
       $channelId = $_GET['id'];
-      //echo $channelId;
 
 
       //za preverit če je prijavljen
-      if (!isset($_SESSION['name'])) {
+          $channelName = "";
+          $channelBio = "";
+
+          // Check if the user is logged in and retrieve channel information
+          if (isset($_SESSION['name'])) {
+              $user_id = $_SESSION['user_id'];
+
+          }
+              $sql = "SELECT c.name, c.surname, c.name_c, p.id_p, c.bio, p.URL 
+                FROM channels c
+                LEFT JOIN pictures p ON c.pf_id = p.id_p
+                WHERE c.id_c = ?";
+
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute([$channelId]);
+              $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+              if ($user) {
+                  $channelName = $user['name_c'];
+                  $channelBio = $user['bio'];
+
+              }
 
 
-      }
-      else{
-      $user_id = $_SESSION['user_id'];
-      if ($channelId == $user_id) {
-          echo "<a href='edit.php?id=" . $user_id . "'> Change user details</a><br>";
-      }}}
 
 
+      // Če je URL slike NULL, uporabite privzeto sliko ali prikažite neko sporočilo
+      $profileImage = $user['URL'] ?? 'pictures/default.jpg';
 
-      ?>
+          ?>
 
     <!-- ======= About Section ======= -->
     <section id="about" class="about">
       <div class="container">
 
         <div class="row gy-4 justify-content-center">
-          <div class="col-lg-4">
-            <img src="assets/img/profile-img.jpg" class="img-fluid" alt="">
+          <div class="col-lg-4" style="margin-top: 200px">
+              <img src='<?php echo $profileImage; ?>' id='ime' alt='Profilna slika' height='200px' width='auto'><br>
           </div>
           <div class="col-lg-5 content">
-            <p class="fst-italic py-3">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-              magna aliqua.
-            </p>
+
             <div class="row">
-              <div class="col-lg-6">
+                <div style="margin-top: 200px">
                 <ul>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Channel name:</strong> <span><?php echo $channelName; ?></span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Description:</strong> <span><?php echo $channelBio; ?></span></li>
+                <?php
+                if ($channelId == $user_id) {
+                    echo "<li><a href='edit.php?id=" . $user_id . "'> Change user details</a></li>";
+                    ?><a href ="upload.php">Upload a video</a> <?php
 
+                }
+                if (isset($_GET['id'])) {
+                    $channelId = $_GET['id'];
 
+                    if (!isset($_SESSION['user_id'])) {
+                        // Uporabnik ni prijavljen, ne prikaži ničesar
+                    } else {
+                        $user_id = $_SESSION['user_id'];
 
+                        if ($channelId == $user_id) {
+                            // Uporabnik gleda svoj kanal, ne prikažemo gumba
+                        } else {
+                            // Preverite, ali je trenutni uporabnik naročen na ta kanal
+                            $sqlCheckSubscription = "SELECT * FROM subscribers WHERE subscriber_id = ? AND account_id = ?";
+                            $stmtCheckSubscription = $pdo->prepare($sqlCheckSubscription);
+                            $stmtCheckSubscription->execute([$user_id, $channelId]);
+                            $isSubscribed = $stmtCheckSubscription->rowCount() > 0;
 
+                            if ($isSubscribed) {
+                                // Uporabnik je že naročen, prikažemo "unfollow" gumb
+                                echo "<li><a href='unfollow.php?id=" . $channelId . "'>Unfollow</a></li>";
+                            } else {
+                                // Uporabnik ni naročen, prikažemo "follow" gumb
+                                echo "<li><a href='follow.php?id=" . $channelId . "'>Follow</a></li>";
+                            }
 
-                  <li><i class="bi bi-chevron-right"></i> <strong>Birthday:</strong> <span>1 May 1995</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Website:</strong> <span>www.example.com</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Phone:</strong> <span>+123 456 7890</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>City:</strong> <span>New York, USA</span></li>
-                </ul>
-              </div>
-              <div class="col-lg-6">
-                <ul>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Age:</strong> <span>30</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Degree:</strong> <span>Master</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>PhEmailone:</strong> <span>email@example.com</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Freelance:</strong> <span>Available</span></li>
+                        }
+                    }
+                }
+                ?>
+
                 </ul>
               </div>
             </div>
-            <p class="py-3">
-              Officiis eligendi itaque labore et dolorum mollitia officiis optio vero. Quisquam sunt adipisci omnis et ut. Nulla accusantium dolor incidunt officia tempore. Et eius omnis.
-              Cupiditate ut dicta maxime officiis quidem quia. Sed et consectetur qui quia repellendus itaque neque. Aliquid amet quidem ut quaerat cupiditate. Ab et eum qui repellendus omnis culpa magni laudantium dolores.
-            </p>
-            <p class="m-0">
-              Recusandae est praesentium consequatur eos voluptatem. Vitae dolores aliquam itaque odio nihil. Neque ut neque ut quae voluptas. Maxime corporis aut ut ipsum consequatur. Repudiandae sunt sequi minus qui et. Doloribus molestiae officiis.
-              Soluta eligendi fugiat omnis enim. Numquam alias sint possimus eveniet ad. Ratione in earum eum magni totam.
-            </p>
+
           </div>
         </div>
 
       </div>
     </section><!-- End About Section -->
+      <?php
+       }?>
 
     <!-- ======= Testimonials Section ======= -->
     <section id="testimonials" class="testimonials">
       <div class="container">
 
         <div class="section-header">
-          <h2>Testimonials</h2>
-          <p>What they are saying</p>
+          <p>Videos</p>
         </div>
+          <?php
 
-        <div class="slides-3 swiper">
-          <div class="swiper-wrapper">
+          $sqle = "SELECT * FROM `videos` v 
+        INNER JOIN channels c ON c.id_c = v.id_c 
+        WHERE c.id_c = ?";
+          $stmt = $pdo->prepare($sqle);
+          $stmt->execute([$channelId]);
+          $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                </div>
-                <p>
-                  Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.
-                </p>
-                <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-1.jpg" class="testimonial-img" alt="">
-                  <h3>Saul Goodman</h3>
-                  <h4>Ceo &amp; Founder</h4>
-                </div>
-              </div>
-            </div><!-- End testimonial item -->
+          $num_rows = count($rows);
 
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                </div>
-                <p>
-                  Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.
-                </p>
-                <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img" alt="">
-                  <h3>Sara Wilsson</h3>
-                  <h4>Designer</h4>
-                </div>
-              </div>
-            </div><!-- End testimonial item -->
+          foreach ($rows as $row) {
 
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                </div>
-                <p>
-                  Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim.
-                </p>
-                <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img" alt="">
-                  <h3>Jena Karlis</h3>
-                  <h4>Store Owner</h4>
-                </div>
-              </div>
-            </div><!-- End testimonial item -->
 
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                </div>
-                <p>
-                  Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam.
-                </p>
-                <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img" alt="">
-                  <h3>Matt Brandon</h3>
-                  <h4>Freelancer</h4>
-                </div>
-              </div>
-            </div><!-- End testimonial item -->
+              if ($num_rows == 0) {
+                  echo "<div class='sli'> No Videos uploaded </div>";
+              } else {
 
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                </div>
-                <p>
-                  Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam enim culpa labore duis sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore nisi cillum quid.
-                </p>
-                <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-5.jpg" class="testimonial-img" alt="">
-                  <h3>John Larson</h3>
-                  <h4>Entrepreneur</h4>
-                </div>
-              </div>
-            </div><!-- End testimonial item -->
+                  echo "<div class='testimonial-item'><a href='page.php?id=" . $row["id_v"] . "'> " . "";
+                  if ($channelId == $_SESSION['user_id']) {
+                      // Prikaži povezave za urejanje in brisanje samo, če je uporabnik gledal svoj kanal
+                      echo "<a href='edit_v.php?id=" . $row["id_v"] . "'>Uredi</a>";
+                      echo "<a href='delete_video.php?id=" . $row["id_v"] . "'>Izbriši</a>";
+                  }
+                  echo "<img src='" . (!empty($row["thumb"]) ? $row["thumb"] : "thumbnails/default.png") . "' alt='Thumbnail' class='thumb'/><br>";
+                  echo "<a href='page.php?id=" . $row["id_v"] . "'>" . $row["title"] . "</a> <br>";
+                  echo  $row["descr"] .
+                      "</a> </div>";
+              }
 
-          </div>
-          <div class="swiper-pagination"></div>
-        </div>
+          }
+          ?>
+
 
       </div>
     </section><!-- End Testimonials Section -->
