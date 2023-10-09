@@ -1,6 +1,7 @@
 <?php
         require_once "base.php";
         require_once "session.php";
+        require_once "Auth.php";
 
 ?>
 <!DOCTYPE html>
@@ -64,7 +65,7 @@
             <?php
             if (!isset($_SESSION['name'])) {
               ?> <li><a href="log_in.php">Log in</a></li> 
-              <li><a href="reg.php">Sign in</a></li>
+              <li><a href="reg.php">Sign in </a></li>
               
               <?php }
 
@@ -80,7 +81,6 @@
 
                 <?php
                 $subscriber_id = $_SESSION['user_id']; // Postavite vaš ID naročnika
-
                 $sql = "SELECT c.name_c , c.id_c
         FROM subscribers AS s
         INNER JOIN channels AS c ON s.account_id = c.id_c
@@ -93,7 +93,7 @@
 
                     }
                 } else {
-                    echo "Niste naročeni na noben kanal.";
+                    echo "You aren't following any channel.";
                 } ?>
 
 
@@ -179,14 +179,13 @@
   <footer id="footer" class="footer">
     <div class="container">
       <div class="copyright">
-        &copy; Copyright <strong><span>PhotoFolio</span></strong>. All Rights Reserved
+          &copy; Copyright <strong><span>Bella G.</span></strong>
       </div>
       <div class="credits">
         <!-- All the links in the footer should remain intact. -->
         <!-- You can delete the links only if you purchased the pro version. -->
         <!-- Licensing information: https://bootstrapmade.com/license/ -->
         <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/photofolio-bootstrap-photography-website-template/ -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
       </div>
     </div>
   </footer><!-- End Footer -->
