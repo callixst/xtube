@@ -1,98 +1,232 @@
 <?php
 require_once "base.php";
 require_once "session.php";
-$user_id = $_SESSION['user_id'];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>ztube</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<?php
-if (isset($_GET['id'])) {
-$channelId = $_GET['id'];
-//echo $channelId;
+  <title>PhotoFolio Bootstrap Template - About</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+
+  <link href="assets/css/main.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header d-flex align-items-center fixed-top">
+      <div class="container-fluid d-flex align-items-center justify-content-between">
+
+          <a href="index.php" class="logo d-flex align-items-center  me-auto me-lg-0">
+              <img src="pictures/MINI_LOGO.png" alt="logo">
+          </a>
+
+          <nav id="navbar" class="navbar">
+              <ul>
+                  <li>
+                      <form method="get" action="search.php">
+                          <br><input type="text" name="key" placeholder="Search">
+                          <input type="submit" value="Search">
+                      </form></li>
+                  <li><a href="index.php" class="active">Home</a></li>
+
+                  <?php
+                  if (!isset($_SESSION['name'])) {
+                      ?> <li><a href="log_in.php">Log in</a></li>
+                      <li><a href="reg.php">Sign in</a></li>
+
+                  <?php }
+
+                  else{
+                      echo "<li><a href='channel.php?id=" . $_SESSION['user_id'] . "'> Channel</a></li>";
+                      ?>
+                      <li><a href="library.php">Library</a> </li>
+                      <li><a href="log_out.php">Log out</a> </li>
 
 
-//za preverit če je prijavljen
-if (!isset($_SESSION['name'])) {
-    ?> <a href="log_in.php">Log in</a> <br>
-    <a href="reg.php">Sign in</a> <?php }
-else{
+                      <li class="dropdown"><a href="#"><span>Following</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+                          <ul>
 
-    $sql = "SELECT c.name, c.surname, c.name_c, p.id_p, c.bio, p.URL 
+                              <?php
+                              $subscriber_id = $_SESSION['user_id']; // Postavite vaš ID naročnika
+
+                              $sql = "SELECT c.name_c , c.id_c
+        FROM subscribers AS s
+        INNER JOIN channels AS c ON s.account_id = c.id_c
+        WHERE s.subscriber_id = $subscriber_id";
+
+                              $result1 = $link->query($sql);
+                              if ($result1->num_rows > 0) {
+                                  while ($row = $result1->fetch_assoc()) {
+                                      echo "<li><a href='channel.php?id=" . $row['id_c'] . "'> ". $row["name_c"] ."</a></li>";
+
+                                  }
+                              } else {
+                                  echo "Niste naročeni na noben kanal.";
+                              } ?>
+
+
+                              </li>
+                          </ul>
+
+
+
+                      </li>
+                      <?php
+
+                  } ?>
+              </ul>
+          </nav><!-- .navbar -->
+
+          <div class="header-social-links">
+
+          </div>
+          <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+          <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+
+      </div>
+  </header><!-- End Header -->
+
+  <main id="main" data-aos="fade" data-aos-delay="1500">
+
+      <!--changing user-->
+      <?php
+      if (isset($_GET['id'])) {
+          $channelId = $_GET['id'];
+
+          // Check if the user is logged in and retrieve channel information
+          if (isset($_SESSION['name'])) {
+              $user_id = $_SESSION['user_id'];
+
+          }
+      $sql = "SELECT c.name, c.surname, c.name_c, p.id_p, c.bio, p.URL 
         FROM channels c
         LEFT JOIN pictures p ON c.pf_id = p.id_p
         WHERE c.id_c = ?";
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$channelId]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute([$channelId]);
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
-        $name = $user['name'];
-        $surname = $user['surname'];
-        $channelName = $user['name_c'];
-        $channelBio = $user['bio'];
+      if ($user) {
+          $name = $user['name'];
+          $surname = $user['surname'];
+          $channelName = $user['name_c'];
+          $channelBio = $user['bio'];
 
-        // Če je URL slike NULL, uporabite privzeto sliko ali prikažite neko sporočilo
-        $profileImage = $user['URL'] ?? 'pictures/default.jpg';
-
-        // Prikaz uporabniških podatkov in slike profila
-        echo "<div>";
-        echo "<img src='$profileImage' alt='Profilna slika' height='200px' width='auto'><br>";
-        echo "<h1> $channelName</h1><br>";
-        echo "Full name: $name $surname<br>";
-        echo "Description: $channelBio<br>";
-        echo "</div>";
+          // Če je URL slike NULL, uporabite privzeto sliko ali prikažite neko sporočilo
+          $profileImage = $user['URL'] ?? 'pictures/default.jpg';
 
 
+          ?>
 
+    <!-- ======= About Section ======= -->
+    <section id="about" class="about">
+      <div class="container">
 
-    } else {
-        // Prikaz sporočila, če kanal ne obstaja
-        echo "Kanal ne obstaja.";
-    }
-        // Prikaz uporabniških podatkov in slike profila
-        echo "<div>";
-        ?>
-    <form method="post" action="edit_in.php">
+        <div class="row gy-4 justify-content-center">
+          <div class="col-lg-4" style="margin-top: 200px">
+              <img src='<?php echo $profileImage; ?>' id='ime' alt='Profilna slika' height='200px' width='auto'><br>
+          </div>
+          <div class="col-lg-5 content">
 
-    <input type="text" id="name" name="lname" value="<?php echo $name;  ?>"><br><br>
-        <input type="text" id="surname" name="lname" value="<?php echo $surname;  ?>"><br><br>
+            <div class="row">
+                <div style="margin-top: 200px">
+                <ul>
+                  <i class="bi bi-chevron-right"></i> <strong></strong> <span><form method="post" action="edit_in.php">
+        <h3>Change your profile details:</h3>
+
         <input type="text" id="username" name="lname" value="<?php echo $channelName;   ?>"><br><br>
-        Bio: <input type="textarea" id="bio" name="lname" value="<?php echo $channelBio;   ?>"><br><br>
+        Bio: <input type="textarea" id="bio" name="bio" value="<?php echo $channelBio;   ?>"><br><br>
         <input type="submit"  value="Change" name="submit" >
-    </form>
-        <h3>Change your profile:</h3>
+    </form><br>
+        <h3>Change your profile picture:</h3>
         <form action="change_pic.php" method="post" enctype="multipart/form-data">
             <input type="file" name="profile_picture" id="profile_picture">
             <input type="submit" value="Naloži sliko" name="submit">
         </form>
         <?php
-        echo "<img src='$profileImage' alt='Profilna slika' height='200px' width='auto'><br>";
-        echo "<h1> $channelName</h1><br>";
-        echo "Full name: $name $surname<br>";
-        echo "Description: $channelBio<br>";
         echo "</div>";
-    }
+    }?></span></li>
+
+
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End About Section -->
+      <?php
+       }?>
+
+    <!-- ======= Testimonials Section ======= -->
+    <section id="testimonials" class="testimonials">
+      <div class="container">
 
 
 
 
-    ?><a href="log_out.php">Log out</a><br><?php
+      </div>
+    </section><!-- End Testimonials Section -->
 
+  </main><!-- End #main -->
 
-}
-?>
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="container">
+      <div class="copyright">
+          &copy; Copyright <strong><span>Bella G.</span></strong>
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/photofolio-bootstrap-photography-website-template/ -->
+      </div>
+    </div>
+  </footer><!-- End Footer -->
 
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
+  <div id="preloader">
+    <div class="line"></div>
+  </div>
 
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
 
-</head>
-<body>
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+
 </body>
+
 </html>
