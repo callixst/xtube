@@ -4,9 +4,9 @@ $_ENV["GOOGLE_CLIENT_ID"] = "344988475329-msrld6b3e3q90u3ek9pggsphoa7bjhct.apps.
 $_ENV["GOOGLE_CLIENT_SECRET"] = "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";
 $_ENV["GOOGLE_REDIRECT_URI"] = "http://localhost/xtube/external_login.php?login_provider=google";
 
-$_ENV["FACEBOOK_APP_ID"] = "1051204682901058";
-$_ENV["FACEBOOK_APP_SECRET"] = "7bdf106222af813531ab36617091d2dd";
-$_ENV["FACEBOOK_REDIRECT_URI"] = "http://localhost/Tumblr/external_login.php?login_provider=facebook";
+$_ENV["FACEBOOK_APP_ID"] = "1035521354255621";
+$_ENV["FACEBOOK_APP_SECRET"] = "e238a2b9ab907f8c061cde791b5ab231";
+$_ENV["FACEBOOK_REDIRECT_URI"] = "http://localhost/xtube/external_login.php?login_provider=facebook";
 class Auth
 {
 
@@ -58,9 +58,7 @@ class Auth
 
         return [
             "google_id" => $google_account_info->id,
-            "name" => $google_account_info->givenName,
-            "name_c" => $google_account_info->familyName,
-            "surname" => $google_account_info->name,
+            "name" => $google_account_info->name,
 
             "email" => $google_account_info->email,
         ];
@@ -156,4 +154,5 @@ class Auth
             "email" => $fbemail,
         ];
     }
+
 }
