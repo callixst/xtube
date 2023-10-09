@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) {
     $userId = $_SESSION['user_id'];
 
 
-    $sqlCheckOwnership = "SELECT * FROM videos WHERE id_v = ? AND id_user = ?";
+    $sqlCheckOwnership = "SELECT * FROM videos WHERE id_v = ? AND id_c = ?";
     $stmtCheckOwnership = $pdo->prepare($sqlCheckOwnership);
     $stmtCheckOwnership->execute([$videoId, $userId]);
 
